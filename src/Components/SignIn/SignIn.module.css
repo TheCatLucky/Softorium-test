@@ -1,0 +1,14 @@
+.wrapper {
+	display: flex;
+	flex-direction: column;
+}
+.input {
+	display: flex;
+	flex-direction: column;
+}
+.input input {
+	margin-top: 10px;
+}
+.input button {
+	margin-top: 10px;
+}
