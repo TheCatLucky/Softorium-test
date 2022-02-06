@@ -1,48 +1,57 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { FC } from "react";
+import { Field, Form, Formik } from "formik";
+import { nanoid } from "nanoid";
+import { FC, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
-import { useDispatch } from "react-redux";
-import { authAPI } from "../../API/API";
-import { logIn } from "../../Store/Reducers/Auth";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, NavLink } from "react-router-dom";
+import { actions, logIn } from "../../Store/Reducers/Auth";
+import { AppStateType } from "../../Store/Store";
 import style from "./SignIn.module.css";
-type Props = {};
-type Error = {
-	text?: string;
-};
+
 export type Values = {
 	username: string;
 	password: string;
 };
-const SignIn: FC<Props> = () => {
+const SignIn: FC = () => {
+	const isAuth = useSelector((state: AppStateType) => state.auth.isAuth);
+	const authError = useSelector((state: AppStateType) => state.auth.error);
+	const isFetching = useSelector((state: AppStateType) => state.auth.isFethcing);
 	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(actions.setRegSuccess(false));
+		dispatch(actions.setError(""));
+	}, []);
+	if (!localStorage.getItem("X-APP-ID")) {
+		localStorage.setItem("X-APP-ID", nanoid());
+	}
+	if (isAuth) {
+		return <Navigate to={"/profile"} />;
+	}
 	return (
 		<div className={style.wrapper}>
-			<h2 className={style.h2}>Авторизация</h2>
-			<Formik
-				initialValues={{ username: "", password: "" }}
-				//				validate={(values) => {
-				//					const errors: Error = {};
-				//					let endValue = values.name.match(/^[а-яА-я]*/);
-				//					//@ts-ignore
-				//          values.text = endValue[0] || "";
-				//					return errors;
-				//				}}
-				onSubmit={(values, { setSubmitting }) => {
-          setSubmitting(false);
-					dispatch(logIn(values.username, values.password));
-				}}
-			>
-				{({ isSubmitting }) => (
-					<Form className={style.input}>
-						<Field type="text" name="username" placeholder="Email" />
-						<Field type="password" name="password" placeholder="Пароль" />
-						<ErrorMessage name="text" component="div" className={style.error}></ErrorMessage>
-						<button type="submit" disabled={isSubmitting}>
-							Авторизоваться
-						</button>
-					</Form>
-				)}
-			</Formik>
+			<div className={style.content}>
+				<h2 className={style.h2}>Авторизация</h2>
+				<Formik
+					initialValues={{ username: "", password: "" }}
+					onSubmit={(values) => {
+						dispatch(logIn(values.username, values.password));
+					}}
+				>
+					{() => (
+						<Form className={style.input}>
+							<Field type="text" name="username" placeholder="Email" />
+							<Field type="password" name="password" placeholder="Пароль" />
+							<button type="submit" disabled={isFetching}>
+								Авторизоваться
+							</button>
+							{authError && <p className={style.responseError}>{authError}</p>}
+						</Form>
+					)}
+				</Formik>
+				<div className={style.navlink}>
+					<NavLink to="/signUp">Зарегистрироваться</NavLink>
+				</div>
+			</div>
 		</div>
 	);
 };

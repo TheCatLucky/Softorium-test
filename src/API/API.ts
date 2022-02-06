@@ -1,49 +1,90 @@
 import axios from "axios";
 const instance = axios.create({
-  baseURL: "https://testtask.softorium.pro/",
-  headers: {
-    "X-APP-ID" : "123123123123"
-  }
+	baseURL: "https://testtask.softorium.pro/",
 });
 
 const authorizedInstance = axios.create({
-  baseURL: "https://testtask.softorium.pro/",
-  headers: {
-    "X-APP-ID" : "123123123123"
-  }
+	baseURL: "https://testtask.softorium.pro/",
 });
-
-authorizedInstance.interceptors.request.use(config => {
-  //@ts-ignore
-  config.headers.Authorization = `Bearer ${localStorage.getItem("userToken")}`;
-  return config;
+instance.interceptors.request.use((config) => {
+	if (!config) {
+		config = {};
+	}
+	if (!config.headers) {
+		config.headers = {};
+	}
+	config.headers["X-APP-ID"] = `${localStorage.getItem("X-APP-ID")}`;
+	return config;
+});
+authorizedInstance.interceptors.request.use((config) => {
+	if (!config) {
+		config = {};
+	}
+	if (!config.headers) {
+		config.headers = {};
+	}
+	config.headers.Authorization = `Bearer ${localStorage.getItem("userToken")}`;
+	config.headers["X-APP-ID"] = `${localStorage.getItem("X-APP-ID")}`;
+	return config;
 });
 
 export const authAPI = {
-  login(formData:FormData) {
-    return instance.post("signin",formData)
-      .then((response) => {
-        localStorage.setItem("userToken", response.data.access_token);
-        return response.data;
-      });
-  },
-  logout() {
-    localStorage.removeItem("userToken");
-    return;
-  },
-  registration(name:string, email:string, phone:string, password:string, birthday:string, avatar_img:string, ) {
-    return instance.post("signup", {
-      phone, password, name, email, birthday, avatar_img, time_zone: "+03"
-    })
-      .then(response => {
-        return response.data;
-      });
-  }
+	login(formData: FormData) {
+		return instance
+			.post("signin", formData)
+			.then(({ data }) => {
+				localStorage.setItem("userToken", data.access_token);
+				return data;
+			})
+      .catch((error) => {
+				if (error.response.data.detail) {
+					return error.response.data;
+				}
+				return error;
+			});
+	},
+	logout() {
+		localStorage.removeItem("userToken");
+		return;
+	},
+	registration(
+		name: string,
+		email: string,
+		phone: string,
+		password: string,
+		birthday: string,
+		avatar_img: string | ArrayBuffer | undefined
+	) {
+		return instance
+			.post("signup", {
+				phone,
+				password,
+				name,
+				email,
+				birthday,
+				avatar_img,
+				time_zone: "+03",
+			})
+			.then((data) => data)
+			.catch((error) => {
+				if (error.response.data.detail) {
+					return error.response.data;
+				}
+				return error;
+			});
+	},
 };
 
 export const userAPI = {
-  me() {
-    return authorizedInstance.get("users/me")
-      .then((response) => { console.log(response); });
-  }
+	me() {
+		return authorizedInstance
+			.get("users/me")
+			.then(({ data }) => data)
+			.catch((error) => {
+				if (error.response.data.detail) {
+					return error.response.data;
+				}
+				return error;
+			});
+	},
 };

@@ -1,12 +1,12 @@
 import { Action, applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk, { ThunkAction } from "redux-thunk";
-import appReducer from "./Reducers/App";
 import authReducer from "./Reducers/Auth";
+import profileReducer from "./Reducers/Profile";
 
 const rootReducer = combineReducers({
+	profile: profileReducer,
 	auth: authReducer,
-	app: appReducer,
 });
 export type InferActionsTypes<T> = T extends { [keys: string]: (...args: any[]) => infer U } ? U : never;
 export type BaseThunkType<A extends Action, R = void> = ThunkAction<R, AppStateType, unknown, A>;

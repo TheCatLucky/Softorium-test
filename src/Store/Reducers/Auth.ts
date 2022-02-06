@@ -1,21 +1,35 @@
-import { authAPI, userAPI } from "./../../API/API";
+import { authAPI } from "./../../API/API";
 import { BaseThunkType, InferActionsTypes } from "./../Store";
 
 type InitialStateType = typeof initialState;
 
 const initialState = {
-	email: null as string | null,
 	isAuth: false as boolean,
+	error: null as string | null,
+	isRegSuccess: false as boolean,
+	isFethcing: false as boolean,
 };
 
 type ActionsType = InferActionsTypes<typeof actions>;
-type ThunkType = BaseThunkType<ActionsType >;
-const authReducer = (
-	state: InitialStateType = initialState,
-	action: ActionsType
-): InitialStateType => {
+type ThunkType = BaseThunkType<ActionsType>;
+const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
 	switch (action.type) {
-		case "SET_USER_DATA":
+		case "SET_IS_AUTH":
+			return {
+				...state,
+				...action.payload,
+			};
+		case "SET_ERROR":
+			return {
+				...state,
+				...action.payload,
+			};
+		case "SET_REG":
+			return {
+				...state,
+				...action.payload,
+			};
+		case "TOGGLE_FETCHING":
 			return {
 				...state,
 				...action.payload,
@@ -25,57 +39,87 @@ const authReducer = (
 			return state;
 	}
 };
-const actions = {
-	setAuthUserData: (
-		userId: number | null,
-		email: string | null,
-		login: string | null,
-		isAuth: boolean
-	) =>
+export const actions = {
+	setIsAuth: (isAuth: boolean) =>
 		({
-			type: "SET_USER_DATA",
+			type: "SET_IS_AUTH",
 			payload: {
-				userId,
-				email,
-				login,
 				isAuth,
+			},
+		} as const),
+	setError: (error: string) =>
+		({
+			type: "SET_ERROR",
+			payload: {
+				error,
+			},
+		} as const),
+	setRegSuccess: (isRegSuccess: boolean) =>
+		({
+			type: "SET_REG",
+			payload: {
+				isRegSuccess,
+			},
+		} as const),
+	toggleFetching: (isFethcing: boolean) =>
+		({
+			type: "TOGGLE_FETCHING",
+			payload: {
+				isFethcing,
 			},
 		} as const),
 };
 
-export const checkAuth = (): ThunkType => (dispatch) => {
-	return userAPI.me().then((data) => {
-/* 		if (data.resultCode === ResultCodesEnum.Success) {
-			let { id, login, email } = data.data;
-			dispatch(actions.setAuthUserData(id, email, login, true));
-		} */
-    console.log(data);
-	});
-};
-
-/* export const logIn =(formData:FormData): ThunkType =>
-	(dispatch) => {
-    authAPI.login(formData).then((data) => {
-      console.log("asd");
-			 if (data.access_token) {
-				dispatch(checkAuth());
-			}
-		});
-	}; */
 export const logIn = (username: string, password: string): ThunkType => {
-  return (dispatch) => {
-    console.log(username);
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
-    authAPI.login(formData).then((data) => {
-      console.log("asd");
-      if (data.access_token) {
-        dispatch(checkAuth());
-      }
-    });
-  };
+	return (dispatch) => {
+		dispatch(actions.toggleFetching(true));
+		const formData = new FormData();
+		formData.append("username", username);
+		formData.append("password", password);
+		authAPI
+			.login(formData)
+      .then((data) => {
+				if (typeof data.detail === "string") {
+          dispatch(actions.setError(data.detail));
+          dispatch(actions.toggleFetching(false));
+					return;
+				}
+				if (data.access_token) {
+					dispatch(actions.setIsAuth(true));
+					dispatch(actions.toggleFetching(false));
+				}
+			})
+      .catch(() => {
+				dispatch(actions.toggleFetching(false));
+				dispatch(actions.setError("Неизвестная ошибка"));
+			});
+	};
 };
 
-
+export const registration = (
+	name: string,
+	email: string,
+	phone: string,
+	password: string,
+	birthday: string,
+	avatar_img: string | ArrayBuffer | undefined
+): ThunkType => {
+	return (dispatch) => {
+		dispatch(actions.toggleFetching(true));
+		authAPI
+			.registration(name, email, phone, password, birthday, avatar_img)
+			.then((data) => {
+				dispatch(actions.toggleFetching(false));
+				if (typeof data.detail === "string") {
+					dispatch(actions.setError(data.detail));
+					return;
+				}
+				dispatch(actions.setRegSuccess(true));
+			})
+      .catch(() => {
+				dispatch(actions.toggleFetching(false));
+				dispatch(actions.setError("Загрузите фото меньшего объёма."));
+			});
+	};
+};
 export default authReducer;
