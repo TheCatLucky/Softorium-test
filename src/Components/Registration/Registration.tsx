@@ -1,38 +1,29 @@
-import ru from "date-fns/locale/ru";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink } from "react-router-dom";
-import { dateConversion } from "../../Helpers/time";
+import PickData from "../../Common/DataPicker/Datapicker";
+import { registrationValidate, Values } from "../../Common/Validators/Registration";
+import { dateConversion } from "../../Helpers/Time";
 import { actions, registration } from "../../Store/Reducers/Auth";
-import { AppStateType } from "../../Store/Store";
-import { signUpValidate } from "./../../Common/Validators/SignUpValidate";
+import { getAuthState } from "../../Store/Selectors/Selectors";
 import arrow from "./../../Icons/arrowleft.svg";
 import download from "./../../Icons/download.svg";
-import style from "./SignUp.module.css";
-registerLocale("ru", ru);
-export type Values = {
-	name: string;
-	email: string;
-	phone: string;
-	password: string;
-};
-const SignUp: FC = () => {
+import style from "./Registration.module.css";
+
+const Registration: FC = () => {
 	const [date, setDate] = useState<Date | null>(null);
 	const [fileName, setFileName] = useState("");
 	const [photo, setPhoto] = useState<string | ArrayBuffer | undefined>(undefined);
-	const authError = useSelector((state: AppStateType) => state.auth.error);
-	const isRegSuccess = useSelector((state: AppStateType) => state.auth.isRegSuccess);
-	const isFetching = useSelector((state: AppStateType) => state.auth.isFethcing);
+	const { error, isRegSuccess, isFethcing } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(actions.setError(""));
 	}, []);
 	const handleRegSubmit = ({ name, email, phone, password }: Values) => {
-    const birthday = dateConversion(date);
-		dispatch(registration({name, email, phone, password, birthday, avatar_img:photo}));
+		const birthday = dateConversion(date);
+		dispatch(registration({ name, email, phone, password, birthday, avatar_img: photo }));
 	};
 	if (isRegSuccess) {
 		return <Navigate to="/" />;
@@ -40,7 +31,7 @@ const SignUp: FC = () => {
 	const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
 		let reader = new FileReader();
 		//@ts-ignore
-    let file = e.target.files[0];
+		let file = e.target.files[0];
 		if (file.name.length > 17) {
 			setFileName(file.name.slice(0, 9) + "..." + file.name.slice(-7));
 		} else {
@@ -51,7 +42,7 @@ const SignUp: FC = () => {
 		};
 		reader.readAsDataURL(file);
 	};
-
+	const handleDateChange = (date: Date) => setDate(date);
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
@@ -61,10 +52,8 @@ const SignUp: FC = () => {
 				<h2 className={style.h2}>Регистрация</h2>
 				<Formik
 					initialValues={{ name: "", email: "", phone: "", password: "" }}
-					validate={(values) => signUpValidate(values)}
-					onSubmit={(values) => {
-						handleRegSubmit(values);
-					}}
+					validate={registrationValidate}
+					onSubmit={handleRegSubmit}
 				>
 					{() => (
 						<Form className={style.input}>
@@ -87,23 +76,11 @@ const SignUp: FC = () => {
 								<img src={download} alt="download" className={style.download} />
 								{fileName || "Выбрать фотографию"}
 							</label>
-							<DatePicker
-								selected={date}
-								onChange={(date: Date) => setDate(date)}
-								dateFormat="yyyy/MM/dd"
-								required
-								showMonthDropdown
-								showYearDropdown
-								dropdownMode="select"
-								fixedHeight
-								locale="ru"
-								placeholderText="Дата рождения"
-								maxDate={new Date()}
-							/>
-							<button type="submit" disabled={isFetching}>
+							<PickData date={date} handleDateChange={handleDateChange} />
+							<button type="submit" disabled={isFethcing}>
 								Зарегистрироваться
 							</button>
-							{authError && <p className={style.responseError}>{authError}</p>}
+							{error && <p className={style.responseError}>{error}</p>}
 						</Form>
 					)}
 				</Formik>
@@ -112,4 +89,4 @@ const SignUp: FC = () => {
 	);
 };
 
-export default SignUp;
+export default Registration;

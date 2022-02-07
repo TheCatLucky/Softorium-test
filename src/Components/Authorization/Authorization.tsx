@@ -4,15 +4,13 @@ import { FC, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink } from "react-router-dom";
+import { Auth } from "../../Common/Types/Types";
 import { actions, logIn } from "../../Store/Reducers/Auth";
-import { AppStateType } from "../../Store/Store";
-import style from "./SignIn.module.css";
+import { getAuthState } from "../../Store/Selectors/Selectors";
+import style from "./Authorization.module.css";
 
-
-const SignIn: FC = () => {
-	const isAuth = useSelector((state: AppStateType) => state.auth.isAuth);
-	const authError = useSelector((state: AppStateType) => state.auth.error);
-	const isFetching = useSelector((state: AppStateType) => state.auth.isFethcing);
+const Authorization: FC = () => {
+	const { error, isAuth, isFethcing } = useSelector(getAuthState);
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(actions.setRegSuccess(false));
@@ -24,24 +22,22 @@ const SignIn: FC = () => {
 	if (isAuth) {
 		return <Navigate to={"/profile"} />;
 	}
+	const handleLogin = (values: Auth) => {
+		dispatch(logIn(values));
+	};
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
 				<h2 className={style.h2}>Авторизация</h2>
-				<Formik
-					initialValues={{ username: "", password: "" }}
-					onSubmit={(values) => {
-						dispatch(logIn(values));
-					}}
-				>
+				<Formik initialValues={{ username: "", password: "" }} onSubmit={handleLogin}>
 					{() => (
 						<Form className={style.input}>
 							<Field type="text" name="username" placeholder="Логин" />
 							<Field type="password" name="password" placeholder="Пароль" />
-							<button type="submit" disabled={isFetching}>
+							<button type="submit" disabled={isFethcing}>
 								Авторизоваться
 							</button>
-							{authError && <p className={style.responseError}>{authError}</p>}
+							{error && <p className={style.responseError}>{error}</p>}
 						</Form>
 					)}
 				</Formik>
@@ -53,4 +49,4 @@ const SignIn: FC = () => {
 	);
 };
 
-export default SignIn;
+export default Authorization;

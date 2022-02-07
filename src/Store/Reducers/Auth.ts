@@ -25,7 +25,7 @@ const authReducer = (state: InitialStateType = initialState, action: ActionsType
 				...state,
 				...action.payload,
 			};
-		case "SET_REG":
+		case "TOGGLE_REG":
 			return {
 				...state,
 				...action.payload,
@@ -57,7 +57,7 @@ export const actions = {
 		} as const),
 	setRegSuccess: (isRegSuccess: boolean) =>
 		({
-			type: "SET_REG",
+			type: "TOGGLE_REG",
 			payload: {
 				isRegSuccess,
 			},
@@ -80,7 +80,6 @@ export const logIn = ({ username, password }: Auth): ThunkType => {
 		authAPI
 			.login(formData)
       .then((data) => {
-        console.log(data);
 				if (Array.isArray(data.detail)) {
 					dispatch(actions.setError("Введите логин и пароль"));
 					dispatch(actions.toggleFetching(false));

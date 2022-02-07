@@ -4,9 +4,6 @@ const instance = axios.create({
 	baseURL: "https://testtask.softorium.pro/",
 });
 
-const authorizedInstance = axios.create({
-	baseURL: "https://testtask.softorium.pro/",
-});
 instance.interceptors.request.use((config) => {
 	if (!config) {
 		config = {};
@@ -14,17 +11,9 @@ instance.interceptors.request.use((config) => {
 	if (!config.headers) {
 		config.headers = {};
 	}
-	config.headers["X-APP-ID"] = `${localStorage.getItem("X-APP-ID")}`;
-	return config;
-});
-authorizedInstance.interceptors.request.use((config) => {
-	if (!config) {
-		config = {};
+	if (localStorage.getItem("userToken")) {
+		config.headers.Authorization = `Bearer ${localStorage.getItem("userToken")}`;
 	}
-	if (!config.headers) {
-		config.headers = {};
-	}
-	config.headers.Authorization = `Bearer ${localStorage.getItem("userToken")}`;
 	config.headers["X-APP-ID"] = `${localStorage.getItem("X-APP-ID")}`;
 	return config;
 });
@@ -37,9 +26,9 @@ export const authAPI = {
 				localStorage.setItem("userToken", data.access_token);
 				return data;
 			})
-      .catch((error) => {
-        if (error.response.data.detail) {
-          return error.response.data;
+			.catch((error) => {
+				if (error.response.data.detail) {
+					return error.response.data;
 				}
 				return error;
 			});
@@ -71,7 +60,7 @@ export const authAPI = {
 
 export const userAPI = {
 	me() {
-		return authorizedInstance
+		return instance
 			.get("users/me")
 			.then(({ data }) => data)
 			.catch((error) => {

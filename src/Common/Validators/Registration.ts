@@ -1,12 +1,16 @@
-import { Values } from "../../Components/SignUp/SignUp";
-
+export type Values = {
+	name: string;
+	email: string;
+	phone: string;
+	password: string;
+};
 type Error = {
 	name?: string;
 	email?: string;
 	phone?: string;
 	password?: string;
 };
-export const signUpValidate = (values:Values) => {
+export const registrationValidate = (values: Values) => {
 	const errors: Error = {};
 	const phoneReg = /^(8|\+?7-?){1}(\(?\d{3}\)?-?)(-?\d{3}-?\d{2}-?\d{2})$/;
 	if (!phoneReg.test(values.phone)) {
@@ -23,6 +27,9 @@ export const signUpValidate = (values:Values) => {
 	}
 	if (!values.password) {
 		errors.password = "Введите пароль";
-	}
+  }
+  if (values.password.length < 6) {
+		errors.password = "Пароль должен быть длиннее 6 символов";
+  }
 	return errors;
 };

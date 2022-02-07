@@ -40,8 +40,7 @@ const actions = {
 };
 
 export const checkAuth = (): ThunkType => (dispatch) => {
-	return userAPI.me().then((data) => {
-		let { avatar, birthday, email, name, phone } = data;
+	return userAPI.me().then(({ avatar, birthday, email, name, phone }) => {
 		dispatch(actions.setAuthUserData(avatar, birthday, email, name, phone));
 	});
 };
