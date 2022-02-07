@@ -24,10 +24,10 @@ const Profile: FC = () => {
 			<div className={style.content}>
 				<img className={style.img} src={avatar} alt="avatar" />
 				<div className={style.column}>
-					<h2 className={style.name}>{name}</h2>
-					<p>{birthday}</p>
-					<p>{email}</p>
-					<p>{phone}</p>
+          <h2 className={style.name}>{name}</h2>
+					<p>Почта: {email}</p>
+					<p>Телефон: {phone}</p>
+					<p>День рождения: {birthday}</p>
 				</div>
 			</div>
 		</div>
