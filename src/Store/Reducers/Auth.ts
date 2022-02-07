@@ -78,10 +78,10 @@ export const logIn = (username: string, password: string): ThunkType => {
 		formData.append("password", password);
 		authAPI
 			.login(formData)
-      .then((data) => {
+			.then((data) => {
 				if (typeof data.detail === "string") {
-          dispatch(actions.setError(data.detail));
-          dispatch(actions.toggleFetching(false));
+					dispatch(actions.setError(data.detail));
+					dispatch(actions.toggleFetching(false));
 					return;
 				}
 				if (data.access_token) {
@@ -89,7 +89,7 @@ export const logIn = (username: string, password: string): ThunkType => {
 					dispatch(actions.toggleFetching(false));
 				}
 			})
-      .catch(() => {
+			.catch(() => {
 				dispatch(actions.toggleFetching(false));
 				dispatch(actions.setError("Неизвестная ошибка"));
 			});
@@ -116,7 +116,7 @@ export const registration = (
 				}
 				dispatch(actions.setRegSuccess(true));
 			})
-      .catch(() => {
+			.catch(() => {
 				dispatch(actions.toggleFetching(false));
 				dispatch(actions.setError("Загрузите фото меньшего объёма."));
 			});

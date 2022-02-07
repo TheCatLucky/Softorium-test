@@ -36,7 +36,7 @@ export const authAPI = {
 				localStorage.setItem("userToken", data.access_token);
 				return data;
 			})
-      .catch((error) => {
+			.catch((error) => {
 				if (error.response.data.detail) {
 					return error.response.data;
 				}

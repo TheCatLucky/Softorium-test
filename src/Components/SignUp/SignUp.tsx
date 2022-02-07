@@ -1,6 +1,7 @@
+import ru from "date-fns/locale/ru";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink } from "react-router-dom";
@@ -9,8 +10,6 @@ import { AppStateType } from "../../Store/Store";
 import arrow from "./../../Icons/arrowleft.svg";
 import download from "./../../Icons/download.svg";
 import style from "./SignUp.module.css";
-import { registerLocale, setDefaultLocale } from "react-datepicker";
-import ru from "date-fns/locale/ru";
 registerLocale("ru", ru);
 type Error = {
 	name?: string;
@@ -25,7 +24,7 @@ export type Values = {
 	password: string;
 };
 const SignUp: FC = () => {
-	const [date, setDate] = useState<Date|null>(null);
+	const [date, setDate] = useState<Date | null>(null);
 	const [fileName, setFileName] = useState("");
 	const [photo, setPhoto] = useState<string | ArrayBuffer | undefined>(undefined);
 	const authError = useSelector((state: AppStateType) => state.auth.error);
@@ -35,10 +34,10 @@ const SignUp: FC = () => {
 	useEffect(() => {
 		dispatch(actions.setError(""));
 	}, []);
-  const handleRegSubmit = ({ name, email, phone, password }: Values) => {
-    if (date === null) {
-      return;
-    }
+	const handleRegSubmit = ({ name, email, phone, password }: Values) => {
+		if (date === null) {
+			return;
+		}
 		let d: string | number = date.getDate();
 		let m: string | number = date.getMonth() + 1;
 		let y: string | number = date.getFullYear();
@@ -84,10 +83,10 @@ const SignUp: FC = () => {
 						const phoneReg = /^(8|\+?7-?){1}(\(?\d{3}\)?-?)(-?\d{3}-?\d{2}-?\d{2})$/;
 						if (!phoneReg.test(values.phone)) {
 							errors.phone = "Неверный формат номера";
-            }
-            if (values.name.length > 30) {
-              errors.name = "Слишком длинное Имя и/или Фамилия";
-            }
+						}
+						if (values.name.length > 30) {
+							errors.name = "Слишком длинное Имя и/или Фамилия";
+						}
 						if (!values.name) {
 							errors.name = "Введите имя";
 						}
