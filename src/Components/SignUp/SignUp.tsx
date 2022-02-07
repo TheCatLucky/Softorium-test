@@ -5,6 +5,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink } from "react-router-dom";
+import { dateConversion } from "../../Helpers/time";
 import { actions, registration } from "../../Store/Reducers/Auth";
 import { AppStateType } from "../../Store/Store";
 import { signUpValidate } from "./../../Common/Validators/SignUpValidate";
@@ -30,21 +31,8 @@ const SignUp: FC = () => {
 		dispatch(actions.setError(""));
 	}, []);
 	const handleRegSubmit = ({ name, email, phone, password }: Values) => {
-		if (date === null) {
-			return;
-		}
-		let d: string | number = date.getDate();
-		let m: string | number = date.getMonth() + 1;
-		let y: string | number = date.getFullYear();
-		if (m <= 9) {
-			m = `0${m}`;
-		}
-		if (d < 9) {
-			d = `0${d}`;
-		}
-		let birthday = `${y}-${m}-${d}`;
-
-		dispatch(registration(name, email, phone, password, birthday, photo));
+    const birthday = dateConversion(date);
+		dispatch(registration({name, email, phone, password, birthday, avatar_img:photo}));
 	};
 	if (isRegSuccess) {
 		return <Navigate to="/" />;

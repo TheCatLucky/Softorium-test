@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Registation } from "../Common/Types/Types";
 const instance = axios.create({
 	baseURL: "https://testtask.softorium.pro/",
 });
@@ -36,9 +37,9 @@ export const authAPI = {
 				localStorage.setItem("userToken", data.access_token);
 				return data;
 			})
-			.catch((error) => {
-				if (error.response.data.detail) {
-					return error.response.data;
+      .catch((error) => {
+        if (error.response.data.detail) {
+          return error.response.data;
 				}
 				return error;
 			});
@@ -47,14 +48,7 @@ export const authAPI = {
 		localStorage.removeItem("userToken");
 		return;
 	},
-	registration(
-		name: string,
-		email: string,
-		phone: string,
-		password: string,
-		birthday: string,
-		avatar_img: string | ArrayBuffer | undefined
-	) {
+	registration({ name, email, phone, password, birthday, avatar_img }: Registation) {
 		return instance
 			.post("signup", {
 				phone,

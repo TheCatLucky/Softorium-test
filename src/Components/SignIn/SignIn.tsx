@@ -8,10 +8,7 @@ import { actions, logIn } from "../../Store/Reducers/Auth";
 import { AppStateType } from "../../Store/Store";
 import style from "./SignIn.module.css";
 
-export type Values = {
-	username: string;
-	password: string;
-};
+
 const SignIn: FC = () => {
 	const isAuth = useSelector((state: AppStateType) => state.auth.isAuth);
 	const authError = useSelector((state: AppStateType) => state.auth.error);
@@ -34,12 +31,12 @@ const SignIn: FC = () => {
 				<Formik
 					initialValues={{ username: "", password: "" }}
 					onSubmit={(values) => {
-						dispatch(logIn(values.username, values.password));
+						dispatch(logIn(values));
 					}}
 				>
 					{() => (
 						<Form className={style.input}>
-							<Field type="text" name="username" placeholder="Email" />
+							<Field type="text" name="username" placeholder="Логин" />
 							<Field type="password" name="password" placeholder="Пароль" />
 							<button type="submit" disabled={isFetching}>
 								Авторизоваться

@@ -1,3 +1,4 @@
+import { Auth, Registation } from "../../Common/Types/Types";
 import { authAPI } from "./../../API/API";
 import { BaseThunkType, InferActionsTypes } from "./../Store";
 
@@ -70,7 +71,7 @@ export const actions = {
 		} as const),
 };
 
-export const logIn = (username: string, password: string): ThunkType => {
+export const logIn = ({ username, password }: Auth): ThunkType => {
 	return (dispatch) => {
 		dispatch(actions.toggleFetching(true));
 		const formData = new FormData();
@@ -78,9 +79,10 @@ export const logIn = (username: string, password: string): ThunkType => {
 		formData.append("password", password);
 		authAPI
 			.login(formData)
-			.then((data) => {
-				if (typeof data.detail === "string") {
-					dispatch(actions.setError(data.detail));
+      .then((data) => {
+        console.log(data);
+				if (Array.isArray(data.detail)) {
+					dispatch(actions.setError("Введите логин и пароль"));
 					dispatch(actions.toggleFetching(false));
 					return;
 				}
@@ -89,25 +91,18 @@ export const logIn = (username: string, password: string): ThunkType => {
 					dispatch(actions.toggleFetching(false));
 				}
 			})
-			.catch(() => {
+      .catch(() => {
 				dispatch(actions.toggleFetching(false));
 				dispatch(actions.setError("Неизвестная ошибка"));
 			});
 	};
 };
 
-export const registration = (
-	name: string,
-	email: string,
-	phone: string,
-	password: string,
-	birthday: string,
-	avatar_img: string | ArrayBuffer | undefined
-): ThunkType => {
+export const registration = (payload: Registation): ThunkType => {
 	return (dispatch) => {
 		dispatch(actions.toggleFetching(true));
 		authAPI
-			.registration(name, email, phone, password, birthday, avatar_img)
+			.registration(payload)
 			.then((data) => {
 				dispatch(actions.toggleFetching(false));
 				if (typeof data.detail === "string") {
