@@ -7,16 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink } from "react-router-dom";
 import { actions, registration } from "../../Store/Reducers/Auth";
 import { AppStateType } from "../../Store/Store";
+import { signUpValidate } from "./../../Common/Validators/SignUpValidate";
 import arrow from "./../../Icons/arrowleft.svg";
 import download from "./../../Icons/download.svg";
 import style from "./SignUp.module.css";
 registerLocale("ru", ru);
-type Error = {
-	name?: string;
-	email?: string;
-	phone?: string;
-	password?: string;
-};
 export type Values = {
 	name: string;
 	email: string;
@@ -57,7 +52,7 @@ const SignUp: FC = () => {
 	const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
 		let reader = new FileReader();
 		//@ts-ignore
-		let file = e.target.files[0];
+    let file = e.target.files[0];
 		if (file.name.length > 17) {
 			setFileName(file.name.slice(0, 9) + "..." + file.name.slice(-7));
 		} else {
@@ -78,26 +73,7 @@ const SignUp: FC = () => {
 				<h2 className={style.h2}>Регистрация</h2>
 				<Formik
 					initialValues={{ name: "", email: "", phone: "", password: "" }}
-					validate={(values) => {
-						const errors: Error = {};
-						const phoneReg = /^(8|\+?7-?){1}(\(?\d{3}\)?-?)(-?\d{3}-?\d{2}-?\d{2})$/;
-						if (!phoneReg.test(values.phone)) {
-							errors.phone = "Неверный формат номера";
-						}
-						if (values.name.length > 30) {
-							errors.name = "Слишком длинное Имя и/или Фамилия";
-						}
-						if (!values.name) {
-							errors.name = "Введите имя";
-						}
-						if (!values.email) {
-							errors.email = "Введите email";
-						}
-						if (!values.password) {
-							errors.password = "Введите пароль";
-						}
-						return errors;
-					}}
+					validate={(values) => signUpValidate(values)}
 					onSubmit={(values) => {
 						handleRegSubmit(values);
 					}}
