@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Softorium-test/static/css/main.dde2c62e.css",
-    "main.js": "/Softorium-test/static/js/main.f2131c92.js",
+    "main.css": "/Softorium-test/static/css/main.bb9b7754.css",
+    "main.js": "/Softorium-test/static/js/main.93ac13c7.js",
     "index.html": "/Softorium-test/index.html",
     "static/media/download.svg": "/Softorium-test/static/media/download.88c343f1439ce2212b3bea2a0b553aae.svg",
     "static/media/arrowleft.svg": "/Softorium-test/static/media/arrowleft.e34e44968309b6af2d9c3c868659eb50.svg",
-    "main.dde2c62e.css.map": "/Softorium-test/static/css/main.dde2c62e.css.map",
-    "main.f2131c92.js.map": "/Softorium-test/static/js/main.f2131c92.js.map"
+    "main.bb9b7754.css.map": "/Softorium-test/static/css/main.bb9b7754.css.map",
+    "main.93ac13c7.js.map": "/Softorium-test/static/js/main.93ac13c7.js.map"
   },
   "entrypoints": [
-    "static/css/main.dde2c62e.css",
-    "static/js/main.f2131c92.js"
+    "static/css/main.bb9b7754.css",
+    "static/js/main.93ac13c7.js"
   ]
 }
