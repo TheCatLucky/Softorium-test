@@ -6,7 +6,7 @@ import { Navigate, NavLink } from "react-router-dom";
 import PickData from "../../Common/DataPicker/Datapicker";
 import { registrationValidate, Values } from "../../Common/Validators/Registration";
 import { dateConversion } from "../../Helpers/Time";
-import { actions, registration } from "../../Store/Reducers/Auth";
+import { actions, registration } from "../../Store/Actions/AuthActions";
 import { getAuthState } from "../../Store/Selectors/Selectors";
 import arrow from "./../../Icons/arrowleft.svg";
 import download from "./../../Icons/download.svg";
@@ -30,8 +30,7 @@ const Registration: FC = () => {
 	}
 	const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
 		let reader = new FileReader();
-		//@ts-ignore
-		let file = e.target.files[0];
+		let file = e.target.files![0];
 		if (file.name.length > 17) {
 			setFileName(file.name.slice(0, 9) + "..." + file.name.slice(-7));
 		} else {

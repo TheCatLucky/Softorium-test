@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { checkAuth } from "../../Store/Reducers/Profile";
+import { checkAuth } from "../../Store/Actions/ProfileActions";
 import { getProfileState } from "../../Store/Selectors/Selectors";
 import { AppStateType } from "../../Store/Store";
 import style from "./Profile.module.css";
@@ -19,7 +19,7 @@ const Profile: FC = () => {
 	return (
 		<div className={style.wrapper}>
 			<div className={style.content}>
-				<img className={style.img} src={avatar} alt="avatar" />
+				<img className={style.img} src={avatar!} alt="avatar" />
 				<div className={style.column}>
 					<h2 className={style.name}>{name}</h2>
 					<p>Почта: {email}</p>

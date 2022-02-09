@@ -11,6 +11,5 @@ export const dateConversion = (date: Date|null) => {
 	if (d < 9) {
 		d = `0${d}`;
 	}
-	const birthday = `${y}-${m}-${d}`;
-	return birthday;
+	return `${y}-${m}-${d}`;
 };

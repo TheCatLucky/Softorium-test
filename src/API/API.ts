@@ -5,16 +5,10 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-	if (!config) {
-		config = {};
-	}
-	if (!config.headers) {
-		config.headers = {};
-	}
 	if (localStorage.getItem("userToken")) {
-		config.headers.Authorization = `Bearer ${localStorage.getItem("userToken")}`;
+		config.headers!.Authorization = `Bearer ${localStorage.getItem("userToken")}`;
 	}
-	config.headers["X-APP-ID"] = `${localStorage.getItem("X-APP-ID")}`;
+	config.headers!["X-APP-ID"] = `${localStorage.getItem("X-APP-ID")}`;
 	return config;
 });
 

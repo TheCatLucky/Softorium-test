@@ -12,7 +12,7 @@ type Error = {
 };
 export const registrationValidate = (values: Values) => {
 	const errors: Error = {};
-	const phoneReg = /^(8|\+?7-?){1}(\(?\d{3}\)?-?)(-?\d{3}-?\d{2}-?\d{2})$/;
+	const phoneReg = /^(\+7-?){1}(\(?\d{3}\)?-?)(-?\d{3}-?\d{2}-?\d{2})$/;
 	if (!phoneReg.test(values.phone)) {
 		errors.phone = "Неверный формат номера";
 	}

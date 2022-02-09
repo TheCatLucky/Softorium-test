@@ -1,11 +1,11 @@
 import { Field, Form, Formik } from "formik";
 import { nanoid } from "nanoid";
 import { FC, useEffect } from "react";
-import "react-datepicker/dist/react-datepicker.css";
+
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, NavLink } from "react-router-dom";
 import { Auth } from "../../Common/Types/Types";
-import { actions, logIn } from "../../Store/Reducers/Auth";
+import { actions, logIn } from "../../Store/Actions/AuthActions";
 import { getAuthState } from "../../Store/Selectors/Selectors";
 import style from "./Authorization.module.css";
 

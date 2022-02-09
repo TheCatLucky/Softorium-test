@@ -1,14 +1,16 @@
 import ru from "date-fns/locale/ru";
 import { FC } from "react";
+import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 registerLocale("ru", ru);
 
 type Props = {
 	date: Date | null;
-	handleDateChange: (date:Date) => void
+	handleDateChange: (date: Date) => void;
 };
 const PickData: FC<Props> = ({ date, handleDateChange }) => {
 	return (
+		<>
 			<DatePicker
 				selected={date}
 				onChange={handleDateChange}
@@ -21,7 +23,8 @@ const PickData: FC<Props> = ({ date, handleDateChange }) => {
 				locale="ru"
 				placeholderText="Дата рождения"
 				maxDate={new Date()}
-			></DatePicker>
+			/>
+		</>
 	);
 };
 
