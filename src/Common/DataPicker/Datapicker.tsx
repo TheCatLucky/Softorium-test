@@ -10,7 +10,6 @@ type Props = {
 };
 const PickData: FC<Props> = ({ date, handleDateChange }) => {
 	return (
-		<>
 			<DatePicker
 				selected={date}
 				onChange={handleDateChange}
@@ -24,7 +23,6 @@ const PickData: FC<Props> = ({ date, handleDateChange }) => {
 				placeholderText="Дата рождения"
 				maxDate={new Date()}
 			/>
-		</>
 	);
 };
 
