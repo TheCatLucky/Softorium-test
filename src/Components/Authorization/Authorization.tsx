@@ -30,7 +30,7 @@ const Authorization: FC = () => {
     dispatch(logIn(values));
   };
 
-  let str = 'Новые   значения /   /   заготовленные/с пробелами/ а и без /     /';
+  let str = 'Новые   значения /   /   заготовaленныasdе/с пробелами/ а и без /     /';
   let eng = 'sdasadsad/     sdaaaaaaaaa /sad    /               /    / sadd ddd//   //';
   let result = str.match(/[а-яА-Я]+?\b/gu);
  // console.log(result);
